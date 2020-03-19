@@ -1,27 +1,61 @@
-int switchState = 0;
-void setup(){
-  pinMode(2, INPUT);
-  pinMode(3, OUTPUT);
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
+const int controlPin1 = 2;
+const int controlPin2 = 3;
+const int enablePin = 9;
+const int directionSwitchPin = 4;
+const int onOffSwitchStatePin = 5;
+const int potPin = A0;
+
+int onOffSwitchState = 0;
+int previousOnOffSwitchState = 0;
+int directionSwitchState = 0;
+int previousDirectionSwitchState = 0;
+
+int motorEnabled = 0;
+int motorSpeed = 0;
+int motorDirection = 0;
+
+void setup() {
+ pinMode(directionSwitchPin, INPUT);
+ pinmode(onOffSwitchStatePin, INPUT);
+ pinmode(controlPin1, OUTPUT);
+ pinmode(controlPin2, OUTPUT);
+ pinmode(enablePin, OUTPUT);
+
+ digitalWrite(enablePin, LOW);
 }
 
-void loop(){
-  switchState = digitalRead(2);
-  if (switchState == LOW) { // Button is not pressed
-    digitalWrite(3, HIGH); // green LED
-  	digitalWrite(4, LOW); // red LED
-	  digitalWrite(5, LOW); // red LED
-  } else { // Button is pressed
-    digitalWrite(3, LOW);
-  	digitalWrite(4, LOW);
-  	digitalWrite(5, HIGH);
-    
-    delay(250); // wait for a quarter second
+void loop() {
+ onOffSwitchState = digitalRead(onOffSwitchStatePin);
+ delay(1);
+ directionSwitchState = digitalRead(directionSwitchPin);
+ motorSpeed = analogRead(potPin) / 4;
 
-    // toggle the LEDs
-  	digitalWrite(4, HIGH);
-  	digitalWrite(5, LOW);
-  	delay(250); // wait for a quarter second
+ if (onOffSwitchState != previousOnOffSwitchState) {
+  if (onOffSwitchState == HIGH) {
+   motorEnabled = !motorEnabled;
   }
+ }
+
+ if (directionSwitchState != previousDirectionSwitchState) {
+  if (directionSwitchState == HIGH) {
+   motorDirection = !motorDirection;
+  }
+ }
+
+ if (motorDirection == 1) {
+  digitalWrite(controlPin1, HIGH);
+  digitalWrite(controlPin2, LOW);
+ } else {
+  digitalWrite(controlPin1, LOW);
+  digitalWrite(controlPin2, HIGH);
+ }
+
+ if (motorEnabled == 1) {
+  analogWrite(enablePin, motorSpeed);
+ } else {
+  analogWrite(enablePin, 0);
+ }
+
+ previousDirectionSwitchState = directionSwitchState;
+ previousOnOffSwitchState = onOffSwitchState;
 }
