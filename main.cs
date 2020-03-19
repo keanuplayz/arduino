@@ -1,27 +1,28 @@
-int switchState = 0;
-void setup(){
-  pinMode(2, INPUT);
-  pinMode(3, OUTPUT);
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
+#include <Servo.h>
+Servo myServo;
+
+int const potPin = A0;
+int potVal;
+int angle;
+
+void setup() {
+
+  myServo.attach(9);
+  Serial.begin(9600);
+
 }
 
-void loop(){
-  switchState = digitalRead(2);
-  if (switchState == LOW) { // Button is not pressed
-    digitalWrite(3, HIGH); // green LED
-  	digitalWrite(4, LOW); // red LED
-	  digitalWrite(5, LOW); // red LED
-  } else { // Button is pressed
-    digitalWrite(3, LOW);
-  	digitalWrite(4, LOW);
-  	digitalWrite(5, HIGH);
-    
-    delay(250); // wait for a quarter second
+void loop() {
 
-    // toggle the LEDs
-  	digitalWrite(4, HIGH);
-  	digitalWrite(5, LOW);
-  	delay(250); // wait for a quarter second
-  }
+  potVal = analogRead(potPin);
+  Serial.print(“potVal: “);
+  Serial.print(potVal);
+  
+  angle = map(potVal, 0, 1023, 0, 179);
+  Serial.print(“, angle: “);
+  Serial.println(angle);
+
+  myServo.write(angle);
+  delay(15);
+
 }
