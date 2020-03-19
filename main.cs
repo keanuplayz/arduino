@@ -1,27 +1,26 @@
-int switchState = 0;
-void setup(){
-  pinMode(2, INPUT);
-  pinMode(3, OUTPUT);
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
+/* 
+Code werkt niet, geen idee waarom.
+Heb al half uur hieraan gezeten maar de knopjes doen gewoon niks.
+*/
+int notes[] = {262,294,330,349};
+
+void setup() {
+  Serial.begin(9600);
 }
 
-void loop(){
-  switchState = digitalRead(2);
-  if (switchState == LOW) { // Button is not pressed
-    digitalWrite(3, HIGH); // green LED
-  	digitalWrite(4, LOW); // red LED
-	  digitalWrite(5, LOW); // red LED
-  } else { // Button is pressed
-    digitalWrite(3, LOW);
-  	digitalWrite(4, LOW);
-  	digitalWrite(5, HIGH);
-    
-    delay(250); // wait for a quarter second
+void loop() {
+  int keyVal = analogRead(A0);
+  Serial.println(keyVal);
 
-    // toggle the LEDs
-  	digitalWrite(4, HIGH);
-  	digitalWrite(5, LOW);
-  	delay(250); // wait for a quarter second
+  if(keyVal == 1023){
+    tone(8, notes[0]);
+  } else if(keyVal >= 990 && keyVal <= 1010) {
+    tone(8, notes[1]);
+  } else if(keyVal >= 505 && keyVal <= 515) {
+    tone(8, notes[2]);
+  } else if(keyVal >= 5 && keyVal <= 10) {
+    tone(8, notes[3]);
+  } else {
+    noTone(8);
   }
 }
