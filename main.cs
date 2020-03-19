@@ -1,27 +1,34 @@
-int switchState = 0;
-void setup(){
-  pinMode(2, INPUT);
-  pinMode(3, OUTPUT);
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
+int sensorValue;
+int sensorLow = 1023;
+int sensorHigh = 0;
+
+const int ledPin = 13;
+
+void setup()
+{
+  
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, HIGH);
+
+  while (millis() < 5000)
+  {
+    sensorVakue = analogRead(A0);
+    if (sensorValue > sensorHigh)
+    {
+      sensorHigh = sensorValue;
+    }
+    if (sensorValue < sensorLow)
+    {
+      sensorLow = sensorValue;
+    }
+  }
+  digitalWrite(ledPin, LOW);
 }
 
-void loop(){
-  switchState = digitalRead(2);
-  if (switchState == LOW) { // Button is not pressed
-    digitalWrite(3, HIGH); // green LED
-  	digitalWrite(4, LOW); // red LED
-	  digitalWrite(5, LOW); // red LED
-  } else { // Button is pressed
-    digitalWrite(3, LOW);
-  	digitalWrite(4, LOW);
-  	digitalWrite(5, HIGH);
-    
-    delay(250); // wait for a quarter second
-
-    // toggle the LEDs
-  	digitalWrite(4, HIGH);
-  	digitalWrite(5, LOW);
-  	delay(250); // wait for a quarter second
-  }
+void loop()
+{
+  sensorValue = analogRead(A0);
+  int pitch = map(sensorValue, sensorLow, sensorHigh, 50, 4000);
+  tone(8, pitch, 20);
+  delay(10);
 }
